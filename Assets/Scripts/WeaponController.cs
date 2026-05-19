@@ -20,7 +20,7 @@ public class WeaponController : MonoBehaviour
 
     void Start()
     {
-        
+
         uIController = Object.FindFirstObjectByType<UIController>();
         // initialize ammo without playing sound
         InitAmmo();
@@ -44,71 +44,71 @@ public class WeaponController : MonoBehaviour
 
     void Update() { }
 
-public void Shoot()
-{
-    if (GameManager.instance != null && GameManager.instance.isGameOver)
-        return;
-
-    if (currentAmmo > 0)
+    public void Shoot()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(cam.transform.position, cam.forward, out hit, range, validLayer))
+        if (GameManager.instance != null && GameManager.instance.isGameOver)
+            return;
+
+        if (currentAmmo > 0)
         {
-            if (hit.transform.tag == "Enemy")
+            RaycastHit hit;
+            if (Physics.Raycast(cam.transform.position, cam.forward, out hit, range, validLayer))
             {
-                Instantiate(damageEffect, hit.point, Quaternion.identity);
-                hit.transform.GetComponentInParent<EnemyController>().TakeDamage(damageAmount);
+                if (hit.transform.tag == "Enemy")
+                {
+                    Instantiate(damageEffect, hit.point, Quaternion.identity);
+                    hit.transform.GetComponentInParent<EnemyController>().TakeDamage(damageAmount);
+                }
+                else
+                {
+                    Instantiate(impactEffect, hit.point, Quaternion.identity);
+                }
             }
-            else
+
+            shotsCounter = timetBtwShoots;
+            currentAmmo--;
+            uIController.updateAmmoText(currentAmmo, remainingAmmo);
+        }
+    }
+
+    public void ShootHeld()
+    {
+        if (GameManager.instance != null && GameManager.instance.isGameOver)
+            return;
+
+        if (canAutoFire)
+        {
+            shotsCounter -= Time.deltaTime;
+            if (shotsCounter <= 0)
             {
-                Instantiate(impactEffect, hit.point, Quaternion.identity);
+                Shoot();
             }
         }
+    }
 
-        shotsCounter = timetBtwShoots;
-        currentAmmo--;
+    public void Reload()
+    {
+        if (GameManager.instance != null && GameManager.instance.isGameOver)
+            return;
+
+        remainingAmmo += currentAmmo;
+
+        if (remainingAmmo >= clipSize)
+        {
+            currentAmmo = clipSize;
+            remainingAmmo -= clipSize;
+        }
+        else
+        {
+            currentAmmo = remainingAmmo;
+            remainingAmmo = 0;
+        }
+
         uIController.updateAmmoText(currentAmmo, remainingAmmo);
+
+        if (reloadSound != null)
+            audioSource.PlayOneShot(reloadSound);
     }
-}
-
-public void ShootHeld()
-{
-    if (GameManager.instance != null && GameManager.instance.isGameOver)
-        return;
-
-    if (canAutoFire)
-    {
-        shotsCounter -= Time.deltaTime;
-        if (shotsCounter <= 0)
-        {
-            Shoot();
-        }
-    }
-}
-
-public void Reload()
-{
-    if (GameManager.instance != null && GameManager.instance.isGameOver)
-        return;
-
-    remainingAmmo += currentAmmo;
-
-    if (remainingAmmo >= clipSize)
-    {
-        currentAmmo = clipSize;
-        remainingAmmo -= clipSize;
-    }
-    else
-    {
-        currentAmmo = remainingAmmo;
-        remainingAmmo = 0;
-    }
-
-    uIController.updateAmmoText(currentAmmo, remainingAmmo);
-
-    if (reloadSound != null)
-        audioSource.PlayOneShot(reloadSound);
-}
 
     public void GetAmmo()
     {

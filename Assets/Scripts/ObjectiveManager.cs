@@ -9,7 +9,7 @@ public class ObjectiveManager : MonoBehaviour
     public TMP_Text enemyCountText;
     public TMP_Text timerText;
 
-    public float timeUntilSunrise = 180f; // 3 minutes
+    public float timeUntilSunrise = 180f;
     private float currentTime;
     private bool gameActive = false;
 
@@ -31,18 +31,17 @@ public class ObjectiveManager : MonoBehaviour
         if (!gameActive || Time.timeScale == 0f) return;
 
         currentTime -= Time.deltaTime;
-      if (currentTime <= 0)
-{
-    currentTime = 0;
-    gameActive = false;
-    DayNightCycle dayNight = FindObjectOfType<DayNightCycle>();
-    if (dayNight != null)
-        dayNight.Sunrise();
-    PlayerController.instance.isDead = true;
-    UIController.instance.showDeathScreen();
-}
+        if (currentTime <= 0)
+        {
+            currentTime = 0;
+            gameActive = false;
+            DayNightCycle dayNight = FindObjectOfType<DayNightCycle>();
+            if (dayNight != null)
+                dayNight.Sunrise();
+            PlayerController.instance.isDead = true;
+            UIController.instance.showDeathScreen();
+        }
 
-        // format time as MM:SS
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
         timerText.text = string.Format("Time Until Sunrise: {0:00}:{1:00}", minutes, seconds);

@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public AudioClip winSound;
     public bool isGameOver = false;
-private AudioSource audioSource;
+    private AudioSource audioSource;
     public static GameManager instance;
 
     public int enemiesKilled;
@@ -12,31 +12,33 @@ private AudioSource audioSource;
 
     public GameObject winScreen;
 
-void Awake()
-{
-    instance = this;
-    audioSource = GetComponent<AudioSource>();
-}
-
-    public void EnemyKilled()
+    void Awake()
     {
-        enemiesKilled++;
-
-        if(enemiesKilled >= enemiesToWin)
-        {
-            WinGame();
-        }
+        instance = this;
+        audioSource = GetComponent<AudioSource>();
     }
 
-void WinGame()
+public void EnemyKilled()
 {
-    winScreen.SetActive(true);
-    Cursor.lockState = CursorLockMode.None;
-    Cursor.visible = true;
-    Time.timeScale = 0f;
-    BackgroundMusic.instance.StopMusic();
+    enemiesKilled++;
+    ObjectiveManager.instance.UpdateEnemyCount(enemiesKilled);
 
-    if (winSound != null)
-        audioSource.PlayOneShot(winSound);
+    if (enemiesKilled >= enemiesToWin)
+    {
+        ObjectiveManager.instance.StopTimer();
+        WinGame();
+    }
 }
+
+    void WinGame()
+    {
+        winScreen.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+      //  Time.timeScale = 0f;
+        BackgroundMusic.instance.StopMusic();
+
+        if (winSound != null)
+            audioSource.PlayOneShot(winSound);
+    }
 }

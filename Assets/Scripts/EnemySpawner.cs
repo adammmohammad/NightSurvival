@@ -17,7 +17,6 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        // count current enemies in scene
         int currentEnemies = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
         if (currentEnemies < maxEnemies && totalEnemiesSpawned < totalEnemiesToSpawn)
@@ -33,7 +32,6 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        // pick a random spawn point
         int randomIndex = Random.Range(0, spawnPoints.Length);
         Instantiate(enemyPrefab, spawnPoints[randomIndex].position, spawnPoints[randomIndex].rotation);
         totalEnemiesSpawned++;

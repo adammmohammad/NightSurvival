@@ -32,24 +32,23 @@ public class UIController : MonoBehaviour
         remainingAmmoText.text = "/" + remainingAmmo;
     }
 
-public void showDeathScreen()
-{
-    GameManager.instance.isGameOver = true;
+    public void showDeathScreen()
+    {
+        GameManager.instance.isGameOver = true;
 
-    deathScreen.SetActive(true);
+        deathScreen.SetActive(true);
 
-    Cursor.lockState = CursorLockMode.None;
-    Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
-    if (BackgroundMusic.instance != null)
-        BackgroundMusic.instance.StopMusic();
+        if (BackgroundMusic.instance != null)
+            BackgroundMusic.instance.StopMusic();
 
-    StartCoroutine(PlayDeathSounds());
-}
+        StartCoroutine(PlayDeathSounds());
+    }
 
     IEnumerator PlayDeathSounds()
     {
-        // play game over sound first
         if (gameOverSound != null)
         {
             audioSource.PlayOneShot(gameOverSound);
@@ -72,7 +71,11 @@ public void showDeathScreen()
 
     public void RestartLevel()
     {
-        Time.timeScale = 0f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("Gamee");
+    }
+        public void QuitGame()
+    {
+        Application.Quit();
+        Debug.Log("Quit Game");
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerHealthController : MonoBehaviour
 {
     public AudioClip deathSound;
-private AudioSource audioSource;
+    private AudioSource audioSource;
     public static PlayerHealthController instance;
     public void Awake()
     {
@@ -27,8 +27,8 @@ private AudioSource audioSource;
         Debug.Log(currentHealth);
         if (currentHealth <= 0)
         {
-                if (deathSound != null)
-        AudioSource.PlayClipAtPoint(deathSound, transform.position);
+            if (deathSound != null)
+                AudioSource.PlayClipAtPoint(deathSound, transform.position);
             currentHealth = 0;
             healthBarFill.fillAmount = 0f;
             PlayerController.instance.isDead = true;

@@ -9,13 +9,11 @@ public class DayNightCycle : MonoBehaviour
 
     void Start()
     {
-        // start at night
         sun.intensity = nightIntensity;
     }
 
     public void Sunrise()
     {
-        // called when timer runs out
         sun.intensity = dayIntensity;
         Debug.Log("Sunrise - Game Over!");
     }

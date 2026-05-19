@@ -4,8 +4,8 @@ using System.Collections;
 public class EnemyController : MonoBehaviour
 {
     public AudioClip hitSound;
-public AudioClip deathSound;
-private AudioSource audioSource;
+    public AudioClip deathSound;
+    private AudioSource audioSource;
     private PlayerController playerController;
     public float moveSpeed;
     public Rigidbody theRB;
@@ -160,71 +160,70 @@ private AudioSource audioSource;
         theRB.linearVelocity = new Vector3(theRB.linearVelocity.x, yStore, theRB.linearVelocity.z);
     }
 
-void EnemyShoot()
-{
-    if (shootPoint == null) return;
-    shootPoint.LookAt(playerController.theCam.transform.position);
-    anim.SetTrigger("shooting");
-    StartCoroutine(SpawnBulletDelay());
-}
-
-IEnumerator SpawnBulletDelay()
-{
-    // wait for animation to reach firing pose
-    yield return new WaitForSeconds(0.3f);
-
-    if (projectile != null)
+    void EnemyShoot()
     {
-        EnemyProjectile newProjectile = Instantiate(projectile, shootPoint.position, shootPoint.rotation);
-        newProjectile.damageAmount = shootDamage;
+        if (shootPoint == null) return;
+        shootPoint.LookAt(playerController.theCam.transform.position);
+        anim.SetTrigger("shooting");
+        StartCoroutine(SpawnBulletDelay());
     }
-    else
-    {
-        RaycastHit hit;
-        Vector3 shootDirection = (playerController.theCam.transform.position) - shootPoint.position;
-        int layerMask = ~(1 << gameObject.layer);
 
-        if (Physics.Raycast(shootPoint.position, shootDirection.normalized, out hit, chaseRange, layerMask))
+    IEnumerator SpawnBulletDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        if (projectile != null)
         {
-            if (hit.transform.tag == "Player")
+            EnemyProjectile newProjectile = Instantiate(projectile, shootPoint.position, shootPoint.rotation);
+            newProjectile.damageAmount = shootDamage;
+        }
+        else
+        {
+            RaycastHit hit;
+            Vector3 shootDirection = (playerController.theCam.transform.position) - shootPoint.position;
+            int layerMask = ~(1 << gameObject.layer);
+
+            if (Physics.Raycast(shootPoint.position, shootDirection.normalized, out hit, chaseRange, layerMask))
             {
-                if (damageEffect != null)
-                    Instantiate(damageEffect, hit.point, Quaternion.identity);
-                PlayerHealthController.instance.TakeDamage(shootDamage);
-            }
-            else if (hit.transform.tag != "Enemy")
-            {
-                if (impactEffect != null)
-                    Instantiate(impactEffect, hit.point, Quaternion.identity);
+                if (hit.transform.tag == "Player")
+                {
+                    if (damageEffect != null)
+                        Instantiate(damageEffect, hit.point, Quaternion.identity);
+                    PlayerHealthController.instance.TakeDamage(shootDamage);
+                }
+                else if (hit.transform.tag != "Enemy")
+                {
+                    if (impactEffect != null)
+                        Instantiate(impactEffect, hit.point, Quaternion.identity);
+                }
             }
         }
     }
-}
 
-public void TakeDamage(float damageToTake)
-{
-    if (isDead) return; // prevent taking damage after death
+    public void TakeDamage(float damageToTake)
+    {
+        if (isDead) return;
 
-    currentHealth -= damageToTake;
-    if (healthBarFill != null)
-        healthBarFill.fillAmount = currentHealth / maxHealth;
+        currentHealth -= damageToTake;
+        if (healthBarFill != null)
+            healthBarFill.fillAmount = currentHealth / maxHealth;
 
-    if (hitSound != null)
-        audioSource.PlayOneShot(hitSound);
+        if (hitSound != null)
+            audioSource.PlayOneShot(hitSound);
 
-    if (currentHealth <= 0)
-        Die();
-}
+        if (currentHealth <= 0)
+            Die();
+    }
 
-public void Die()
-{
-    if (isDead) return; // prevent Die() being called twice
-    isDead = true;
+    public void Die()
+    {
+        if (isDead) return;
+        isDead = true;
 
-    if (deathSound != null)
-        AudioSource.PlayClipAtPoint(deathSound, transform.position);
+        if (deathSound != null)
+            AudioSource.PlayClipAtPoint(deathSound, transform.position);
 
-    GameManager.instance.EnemyKilled();
-    Destroy(gameObject);
-}
+        GameManager.instance.EnemyKilled();
+        Destroy(gameObject);
+    }
 }

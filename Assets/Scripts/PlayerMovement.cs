@@ -56,20 +56,19 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-            if (Time.timeScale == 1f)
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
+        if (Time.timeScale == 1f)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void Update()
     {
 
-    if (isDead || Time.timeScale == 0f)
-    {
-        return;
-    }
-    // rest of update code
+        if (isDead || Time.timeScale == 0f)
+        {
+            return;
+        }
 
         if (isDead)
         {
